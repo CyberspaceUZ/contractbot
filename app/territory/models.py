@@ -1,6 +1,7 @@
 from django.db import models
 from app.core.models import TimeStampMixin
 
+
 # Create your models here.
 
 class Territory(TimeStampMixin):
@@ -8,4 +9,3 @@ class Territory(TimeStampMixin):
 
     def __str__(self):
         return self.name
-
