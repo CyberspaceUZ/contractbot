@@ -54,3 +54,6 @@ jobs:
           DATABASE_URL: ${{secrets.DATABASE_URL}}
       - name: Run Test # running tests
         run: python manage.py test
+        env:
+          DATABASE_URL: ${{secrets.DATABASE_URL}}
+            
