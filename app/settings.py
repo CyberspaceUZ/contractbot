@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-
+import logging
 from pathlib import Path
 import os
 import dj_database_url
@@ -87,6 +87,9 @@ DATABASES = {
         default=os.environ.get("DATABASE_URL"), conn_max_age=600
     )
 }
+
+if DEBUG:
+    logging.warning(f'DATABASE: {os.environ.get("DATABASE_URL")}')
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
