@@ -52,5 +52,7 @@ jobs:
         run: export DATABASE_URL="postgres://postgres:postgres@localhost:5432/github-actions"
       - name: Run Migrations # run migrations to create table in side car db container
         run: python manage.py migrate
+        env:
+          DATABASE_URL: ${{secrets.DATABASE_URL}}
       - name: Run Test # running tests
         run: python manage.py test
