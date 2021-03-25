@@ -48,8 +48,6 @@ jobs:
         run: python --version
       - name: Install requirements # install application requirements
         run: pip install -r requirements.txt
-      - name: Export database url
-        run: export DATABASE_URL="postgres://postgres:postgres@localhost:5432/github-actions"
       - name: Run Migrations # run migrations to create table in side car db container
         run: python manage.py migrate
         env:
