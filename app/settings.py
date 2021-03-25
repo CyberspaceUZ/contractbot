@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'phonenumber_field',
 
     'app.account',
+    'app.application',
     'app.core',
     'app.territory',
 ]
