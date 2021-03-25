@@ -14,7 +14,7 @@ class Application(TimeStampMixin):
     owner_file = models.FileField()
     receiver_description = models.CharField(max_length=128, blank=True, null=True)
     receiver_file = models.FileField()
-    status = models.CharField(choices=ApplicationStatus.CHOICES, default=ApplicationStatus.CHOICES[0][0], max_length=50)
+    status = models.CharField(choices=ApplicationStatus.CHOICES, default=ApplicationStatus.CREATED, max_length=50)
 
     def __str__(self):
         return f'{self.territory} {self.owner_description}'
