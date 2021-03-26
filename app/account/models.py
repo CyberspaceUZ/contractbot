@@ -10,12 +10,12 @@ class User(AbstractUser):
 
 
 class BotUser(TimeStampMixin):
-    phone_number = PhoneNumberField()
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
-    company = models.CharField(max_length=100)
+    phone_number = PhoneNumberField(null=True)
+    first_name = models.CharField(max_length=100, null=True, blank=True)
+    last_name = models.CharField(max_length=100, null=True, blank=True)
+    company = models.CharField(max_length=100, null=True, blank=True)
     occupation = models.CharField(max_length=1000, blank=True, null=True)
-    chat_id = models.CharField(max_length=100)
+    chat_id = models.CharField(max_length=100, unique=True, null=True, blank=True)
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
