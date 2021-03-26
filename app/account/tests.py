@@ -15,3 +15,4 @@ class BotUserTestCase(TestCase):
         botuser2 = BotUser.objects.filter(first_name='Maxim').first()
         self.assertEqual(botuser1.phone_number, '+998944984921')
         self.assertEqual(botuser2.chat_id, '-111002444')
+
