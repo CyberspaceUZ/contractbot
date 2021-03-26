@@ -7,4 +7,3 @@ def init_dispatcher(updater: Updater):
     dispatcher = updater.dispatcher
     dispatcher.add_handler(base_handler())
     dispatcher.add_handler(user_conv_handler())
-
