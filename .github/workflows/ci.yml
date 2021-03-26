@@ -58,4 +58,4 @@ jobs:
         run: python manage.py test
         env:
           DATABASE_URL: ${{secrets.DATABASE_URL}}
-            
+
