@@ -6,23 +6,6 @@ on:
 name: Deploy to Amazon ECS
 
 jobs:
-  build-and-push:
-    name: Push to ECR
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - uses: docker://ghcr.io/kciter/aws-ecr-action:latest
-      with:
-        access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        repo: ${{ github.event.repository.name }}on:
-  push:
-    branches:
-      - master
-
-name: Deploy to Amazon ECS
-
-jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
