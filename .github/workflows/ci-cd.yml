@@ -1,18 +1,16 @@
 # name of our workflow
-name: ci/cd
+name: push-to-master
 
 # triggers for our workflow
 on:
   # opening a pull request to master and develop branch will be a trigger
   pull_request:
     branches:
-      - develop
       - master
   # any code pushed to master and develop branch will also be a trigger
   push:
     branches:
       - master
-      - develop
 
 
 # three job definition
