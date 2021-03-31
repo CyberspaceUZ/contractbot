@@ -112,11 +112,15 @@ jobs:
         run: |
           aws eks --region us-east-1 update-kubeconfig --name cyberspace
       - name: Helm Deploy
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ github.event.repository.name }}
+          IMAGE_TAG: ${{ github.sha }}
         run: >
           helm upgrade
           --namespace=${{ github.event.repository.name }}
           --install
-          --set image=${{ steps.repo.outputs.repo_name }}
+          --set image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           --set database_url=${{ secrets.DATABASE_URL }}
           --wait
           --atomic
