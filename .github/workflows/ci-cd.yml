@@ -106,10 +106,10 @@ jobs:
           curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
           chmod 700 get_helm.sh
           ./get_helm.sh
-#       - name: Connect to kubernetes cluster
-#         run: |
-#           gcloud container clusters get-credentials ${{secrets.GKE_CLUSTER}} --zone ${{secrets.GKE_ZONE}} --project ${{secrets.GKE_PROJECT}}
-      - name: Helm Deploy # deploying our helm chart to our cluster
+      - name: Connect to kubernetes cluster
+        run: |
+          aws eks --region us-east-1 update-kubeconfig --name cyberspace
+      - name: Helm Deploy
         run: >
           helm upgrade
           --namespace=${{ github.event.repository.name }}
