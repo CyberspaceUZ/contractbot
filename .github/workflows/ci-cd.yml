@@ -123,7 +123,7 @@ jobs:
           --install
           --set image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           --set database_url=${{ secrets.DATABASE_URL }}
-          --set host=$HOST
+          --set host=ingress.$HOST
           --wait
           --atomic
           ${{ github.event.repository.name }}
