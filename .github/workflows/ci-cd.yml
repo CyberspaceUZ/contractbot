@@ -46,12 +46,8 @@ jobs:
         run: pycodestyle --statistics .
       - name: Run Migrations
         run: python manage.py migrate
-        env:
-          DATABASE_URL: $DATABASE_URL
       - name: Run Test
         run: python manage.py test
-        env:
-          DATABASE_URL: $DATABASE_URL
   
   package-job:
     name: Package job
