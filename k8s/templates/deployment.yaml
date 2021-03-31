@@ -23,6 +23,8 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: database_url
-                  name: appsecrets
+                  name: {{ .Release.Name }}-secrets
           ports:
             - containerPort: 8000
+          command: ["gunicorn"]
+          args: ["--bind", "0.0.0.0:8000", "--max-requests", "50", "app.wsgi"]
