@@ -50,7 +50,7 @@ jobs:
       - name: Run Test
         run: python manage.py test
         env:
-          DATABASE_URL: ${{secrets.DATABASE_URL}}
+          DATABASE_URL: postgres://postres:postgres@localhost:5432/github-actions
   
   package-job:
     name: Package job
@@ -83,3 +83,43 @@ jobs:
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+    
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Set Repo Location
+        id: repo
+        run: echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" # we are setting the image location as output to be used in later step
+      - name: Check Repo Location
+        run: echo ${{ steps.repo.outputs.repo_name }}
+      - name: Install Helm
+        run: |
+          curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+          chmod 700 get_helm.sh
+          ./get_helm.sh
+#       - name: Connect to kubernetes cluster
+#         run: |
+#           gcloud container clusters get-credentials ${{secrets.GKE_CLUSTER}} --zone ${{secrets.GKE_ZONE}} --project ${{secrets.GKE_PROJECT}}
+      - name: Helm Deploy # deploying our helm chart to our cluster
+        run: >
+          helm upgrade
+          --namespace=${{ github.event.repository.name }}
+          --install
+          --set image=${{ steps.repo.outputs.repo_name }}
+          --set database_url=${{ secrets.DATABASE_URL }}
+          --wait
+          --atomic
+          app
+          ./k8s
+      - name: Check pods # checking pod list to see if they are running.
+        run: kubectl get pods
