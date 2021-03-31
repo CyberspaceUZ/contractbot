@@ -50,7 +50,7 @@ jobs:
       - name: Run Test
         run: python manage.py test
         env:
-          DATABASE_URL: postgres://postres:postgres@localhost:5432/github-actions
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/github-actions
   
   package-job:
     name: Package job
