@@ -20,6 +20,7 @@ jobs:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: github-actions
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/github-actions
         ports:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
@@ -46,11 +47,11 @@ jobs:
       - name: Run Migrations
         run: python manage.py migrate
         env:
-          DATABASE_URL: ${{secrets.DATABASE_URL}}
+          DATABASE_URL: $DATABASE_URL
       - name: Run Test
         run: python manage.py test
         env:
-          DATABASE_URL: postgres://postgres:postgres@localhost:5432/github-actions
+          DATABASE_URL: $DATABASE_URL
   
   package-job:
     name: Package job
