@@ -116,7 +116,7 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ github.event.repository.name }}
           IMAGE_TAG: ${{ github.sha }}
-          HOST: test2.artelgroup.org
+          HOST: https://test2.artelgroup.org
         run: >
           helm upgrade
           --namespace=${{ github.event.repository.name }}
