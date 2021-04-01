@@ -7,7 +7,7 @@ spec:
     project: {{ .Release.Name }}
   ports:
     - name: {{ .Release.Name }}-listener
-      port: 443
+      port: 80
       protocol: TCP
       targetPort: 8000
   type: ClusterIP
