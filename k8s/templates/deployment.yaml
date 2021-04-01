@@ -5,7 +5,6 @@ metadata:
   labels:
     app: {{ .Release.Name }}-deployment
 spec:
-  replicas: 1
   selector:
     matchLabels:
       project: {{ .Release.Name }}
@@ -26,7 +25,5 @@ spec:
                   name: {{ .Release.Name }}-secrets
           ports:
             - containerPort: 8000
-          lifecycle:
-            postStart:
-              exec:
-                command: ["gunicorn", "--bind", "0.0.0.0:8000", "--max-requests", "50", "app.wsgi"]
+          command: ["gunicorn"]
+          args: ["--bind", "0.0.0.0:8000", "--max-requests", "50", "app.wsgi"]
