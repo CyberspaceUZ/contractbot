@@ -25,5 +25,4 @@ spec:
                   name: {{ .Release.Name }}-secrets
           ports:
             - containerPort: 8000
-          command: ["gunicorn"]
-          args: ["--bind", "0.0.0.0:8000", "--max-requests", "50", "app.wsgi"]
+
