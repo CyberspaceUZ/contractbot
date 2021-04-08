@@ -1,0 +1,4 @@
+
+
+class BaseChoices:
+    BACK = 'Назад'

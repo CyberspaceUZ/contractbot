@@ -1,14 +1,25 @@
-apiVersion: projectcontour.io/v1
-kind: HTTPProxy
+apiVersion: extensions/v1beta1
+kind: Ingress
 metadata:
-  name: {{ .Release.Name }}-ingress-route
+  name: {{ .Release.Name }}-ingress
+  annotations:
+    alb.ingress.kubernetes.io/group.name: small-cbc-ingress-group
+    alb.ingress.kubernetes.io/group.order: '2'
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
+
 spec:
-  virtualhost:
-    fqdn: {{ .Values.ingress.host }}
-  routes:
-    - conditions:
-        - prefix: /
-      permitInsecure: true
-      services:
-        - name: {{ .Release.Name }}-service
-          port: 80
+  rules:
+    - host: {{ .Values.ingress.host }}
+      http:
+        paths:
+          - path: /{{ .Values.bot_token }}
+            backend:
+              serviceName: {{ .Release.Name }}-bot-service
+              servicePort: 80
+          - path: /*
+            backend:
+              serviceName: {{ .Release.Name }}-service
+              servicePort: 80

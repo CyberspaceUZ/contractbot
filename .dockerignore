@@ -1,0 +1,9 @@
+venv
+.localvalues.yaml
+static
+.cache
+celerybeat-schedule
+k8s
+README.md
+.github
+container
