@@ -5,7 +5,7 @@ from app.account.models import BotUser
 
 class BotUserTestCase(TestCase):
     def setUp(self) -> None:
-        BotUser.objects.create(phone_number='+998944984921', fiull_name='Abdullah',
+        BotUser.objects.create(phone_number='+998944984921', full_name='Abdullah',
                                company="Cyberspace", occupation="developer", chat_id="-11100235")
         BotUser.objects.create(phone_number='+998944984121', full_name='Maxim',
                                company="Cyberspace", occupation="developer", chat_id="-111002444")
