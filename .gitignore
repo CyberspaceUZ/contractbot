@@ -4,3 +4,4 @@ db.sqlite3
 .localvalues.yaml
 *.pyc
 celerybeat-schedule
+.vscode
