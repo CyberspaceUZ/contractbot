@@ -21,6 +21,7 @@ class Application(TimeStampMixin):
     tg_receiver_file_id = models.CharField(max_length=255, blank=True, null=True)
     status = models.CharField(choices=ApplicationStatus.CHOICES, default=ApplicationStatus.CREATED, max_length=50)
     receiver_msg_id = models.CharField(max_length=128, blank=True, null=True)
+    tg_last_kb = models.JSONField(blank=True, null=True)
 
     contr_agent = models.CharField(max_length=255, blank=True, null=True)
     agreement_number = models.CharField(max_length=255, blank=True, null=True)
@@ -35,7 +36,6 @@ class Application(TimeStampMixin):
     payment_terms = models.CharField(max_length=255, blank=True, null=True)
     transfer_risk = models.CharField(max_length=255, blank=True, null=True)
     inco_terms = models.CharField(max_length=255, blank=True, null=True)
-    tg_last_kb = models.JSONField(blank=True, null=True)
 
     def __str__(self):
         return f'{self.territory} {self.owner_description}'
@@ -59,3 +59,23 @@ class Application(TimeStampMixin):
         msg = f'id: {self.id}\n' \
               f'{self.status}\n'
         return msg
+
+    @staticmethod
+    def report_cols():
+        cols = dict(
+            id='Id',
+            contr_agent='Contragent',
+            agreement_number='Agreement number',
+            date_of_origin='Date of origin',
+            maturity_date='Maturity date',
+            amount='Amount',
+            currency='Currency',
+            title='Title',
+            covenants='Existence of financial\n/non-financial covenants',
+            agreement='Type of agreement\n(in or out)',
+            performance='Performance of a contract',
+            payment_terms='Terms of payment',
+            transfer_risk='Transfer risk',
+            inco_terms='incoterms',
+        )
+        return cols

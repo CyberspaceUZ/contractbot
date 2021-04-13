@@ -8,14 +8,14 @@ from app.application.models import Application
 from app.territory.models import Territory
 from bot.application.callbacks import ApplicationCallback, change_application_kb
 from bot.application.constants import ApplicationConvStates, ApplicationActions, ApplicationResultConvStates
-from bot.application.messages import owner_description_msg, owner_document_msg, territory_msg, application_create_msg, \
-    receiver_description_add_msg, receiver_document_add_msg
+from bot.application.messages import owner_description_msg, owner_document_msg, territory_msg, application_create_msg
 from bot.constants import ConvStates, MainMenuChoices
 from bot.core.constants import BaseChoices
 from bot.core.handlers import back_to_main
 from bot.messages import main_menu_msg, value_add_main_menu_msg
 from bot.utils.keyboard import regex_choices_filter, build_menu, obj_buttons, build_reply_kb
-from bot.utils.sessionhelper import update_user_data, get_or_none
+from bot.utils.sessionhelper import update_user_data
+from app.core.utils.etc import get_or_none
 
 APPLICATION = 'application'
 TERRITORY = 'territory'
@@ -141,7 +141,7 @@ def canceled_description(update: Update, context: CallbackContext) -> Applicatio
         obj,
         user_data['last_choice']
     )
-    value_add_main_menu_msg(update, context)
+    main_menu_msg(update, context, text='Добавленно')
     return ConversationHandler.END
 
 
@@ -157,7 +157,7 @@ def canceled_document(update: Update, context: CallbackContext) -> ApplicationRe
         obj,
         user_data['last_choice']
     )
-    value_add_main_menu_msg(update, context)
+    main_menu_msg(update, context, text='Добавленно')
     return ConversationHandler.END
 
 
@@ -172,7 +172,7 @@ def contr_agent(update: Update, context: CallbackContext):
         obj,
         context.user_data['last_choice']
     )
-    value_add_main_menu_msg(update, context)
+    main_menu_msg(update, context, text='Добавленно')
     return ConversationHandler.END
 
 

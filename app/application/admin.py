@@ -14,6 +14,7 @@ class ApplicationAdmin(admin.ModelAdmin):
     )
     list_filter = (
         'status',
+        'territory',
     )
     date_hierarchy = 'created_at'
     exclude = (

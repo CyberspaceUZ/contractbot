@@ -1,3 +1,4 @@
+from app.account.models import BotUser
 
 
 def update_user_data(update, context, key, last_choice=None):
@@ -8,11 +9,9 @@ def update_user_data(update, context, key, last_choice=None):
     return text, context.user_data
 
 
-def get_or_none(class_, **kwargs):
-    try:
-        return class_.objects.get(**kwargs)
-    except class_.DoesNotExist:
-        pass
-    except class_.MultipleObjectsReturned:
-        return []
-    return None
+def is_lawyer(chat_id, return_user=False):
+    user = BotUser.objects.get(chat_id=chat_id)
+    if return_user:
+        return user.territories.exists(), user
+    return user.territories.exists()
+

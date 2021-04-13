@@ -1,14 +1,11 @@
 from telegram.ext import CommandHandler, CallbackContext, ConversationHandler, MessageHandler, Filters
-import logging
-
 from telegram import Update
-
 from app.account.models import BotUser
 from bot.application.handlers import application_handler
-from bot.application.messages import territory_msg
-from bot.constants import ConvStates, MainMenuChoices
+from bot.constants import ConvStates
 from bot.core.constants import BaseChoices
 from bot.messages import stop_msg, main_menu_msg
+from bot.report.handlers import report_handler
 from bot.user.handlers import registration_handler, settings_handler
 from bot.user.messages import language_msg
 from bot.utils.keyboard import regex_choices_filter
@@ -47,6 +44,7 @@ def handlers():
                 # MessageHandler(regex_choices_filter([MainMenuChoices.APPLICATION]), application),
                 application_handler(),
                 settings_handler(),
+                report_handler(),
             ],
             ConvStates.REGISTER: [
                 registration_handler(),
