@@ -14,4 +14,3 @@ def is_lawyer(chat_id, return_user=False):
     if return_user:
         return user.territories.exists(), user
     return user.territories.exists()
-
