@@ -13,9 +13,16 @@ class ConvStates(Enum):
 
 class MainMenuChoices:
     APPLICATION = 'Согласовать договор'
+    REPORT = 'Отчеты'
     SETTINGS = 'Настройки'
 
     CHOICE_LIST = (
         APPLICATION,
+        SETTINGS,
+    )
+
+    LAWYER_CHOICE_LIST = (
+        APPLICATION,
+        REPORT,
         SETTINGS,
     )
