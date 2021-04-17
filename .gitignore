@@ -5,3 +5,5 @@ db.sqlite3
 *.pyc
 celerybeat-schedule
 .vscode
+static
+documents

@@ -9,6 +9,7 @@ from bot.report.handlers import report_handler
 from bot.user.handlers import registration_handler, settings_handler
 from bot.user.messages import language_msg
 from bot.utils.keyboard import regex_choices_filter
+from bot.consultation.handlers import consultation_handler
 
 
 def start(update: Update, context: CallbackContext) -> ConvStates:
@@ -43,6 +44,7 @@ def handlers():
             ConvStates.MAIN_MENU: [
                 # MessageHandler(regex_choices_filter([MainMenuChoices.APPLICATION]), application),
                 application_handler(),
+                consultation_handler(),
                 settings_handler(),
                 report_handler(),
             ],
@@ -63,5 +65,7 @@ def handlers():
         },
         fallbacks=[CommandHandler('stop', stop)],
         allow_reentry=True,
+        name="base_conversation",
+        persistent=True,
     )
     return conv_handler

@@ -1,4 +1,4 @@
-from telegram import Update
+from telegram import Update, ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
 from telegram.ext import ConversationHandler, MessageHandler, Filters, CallbackContext, CommandHandler
 
 from app.account.models import BotUser
@@ -14,13 +14,15 @@ from bot.utils.sessionhelper import update_user_data
 
 def language(update: Update, context: CallbackContext) -> UserConvStates:
     update_user_data(update, context, 'language')
-    phone_msg(update, context)
+    reply_markup = ReplyKeyboardMarkup([[KeyboardButton('Поделиться контактом', request_contact=True)]], resize_keyboard=True)
+    phone_msg(update, context, reply_markup=reply_markup)
     return UserConvStates.PHONE
 
 
 def phone_number(update: Update, context: CallbackContext) -> UserConvStates:
     update_user_data(update, context, 'phone_number')
-    full_name_msg(update, context)
+    reply_markup = ReplyKeyboardRemove()
+    full_name_msg(update, context, reply_markup=reply_markup)
     return UserConvStates.FULL_NAME
 
 
@@ -52,7 +54,7 @@ def registration_handler():
         ],
         states={
             UserConvStates.PHONE: [
-                MessageHandler(Filters.text, phone_number),
+                MessageHandler(Filters.text | Filters.contact, phone_number),
             ],
             UserConvStates.FULL_NAME: [
                 MessageHandler(Filters.text, full_name),
@@ -70,6 +72,8 @@ def registration_handler():
             ConvStates.SETTINGS: ConvStates.SETTINGS,
             ConversationHandler.END: ConvStates.MAIN_MENU,
         },
+        name="registration_conversation",
+        persistent=True,
     )
     return conv_handler
 
@@ -116,6 +120,8 @@ def settings_handler():
         map_to_parent={
             ConversationHandler.END: ConvStates.MAIN_MENU,
         },
-        allow_reentry=True
+        allow_reentry=True,
+        name="settings_conversation",
+        persistent=True,
     )
     return conv_handler

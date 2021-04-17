@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'app.application',
     'app.core',
     'app.territory',
+    'app.consultation',
 ]
 
 MIDDLEWARE = [

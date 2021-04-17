@@ -1,5 +1,7 @@
 from django.core.management import BaseCommand
 import os
+from redis import Redis
+from redispersistence.persistence import RedisPersistence
 
 from telegram.ext import Updater
 from bot.main import init_dispatcher
@@ -18,7 +20,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         token = options["token"]
-        updater = Updater(token)
+        redis_instance = Redis(host='localhost', port=6379, db=0)
+        persistence = RedisPersistence(redis_instance)
+        updater = Updater(token, persistence=persistence)
         init_dispatcher(updater)
         updater.start_polling()
         updater.idle()

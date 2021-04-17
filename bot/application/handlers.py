@@ -126,6 +126,8 @@ def application_handler():
         map_to_parent={
             ConversationHandler.END: ConvStates.MAIN_MENU,
         },
+        name="application_conversation",
+        persistent=True,
     )
     return conv_handler
 
@@ -287,5 +289,7 @@ def application_result_handler():
         },
         fallbacks=[CommandHandler('start', start)],
         allow_reentry=True,
+        name="application_result_conversation",
+        persistent=True,
     )
     return conv_handler
