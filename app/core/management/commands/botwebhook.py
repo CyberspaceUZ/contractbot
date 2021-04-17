@@ -1,5 +1,7 @@
 from django.core.management import BaseCommand
 import os
+from redis import Redis
+from redispersistence.persistence import RedisPersistence
 
 from telegram.ext import Updater
 from bot.main import init_dispatcher
@@ -24,7 +26,9 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         token = options["token"]
         port = options["port"]
-        updater = Updater(token)
+        redis_instance = Redis(host='redis', port=6379, db=0)
+        persistence = RedisPersistence(redis_instance)
+        updater = Updater(token, persistence=persistence)
         init_dispatcher(updater)
         updater.start_webhook(listen="0.0.0.0", port=port, url_path=token)
         updater.bot.set_webhook(
