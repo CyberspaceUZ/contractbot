@@ -72,6 +72,8 @@ def report_handler():
         map_to_parent={
             ConversationHandler.END: ConvStates.MAIN_MENU,
         },
-        allow_reentry=True
+        allow_reentry=True,
+        name="report_conversation",
+        persistent=True,
     )
     return conv_handler

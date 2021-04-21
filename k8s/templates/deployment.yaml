@@ -120,8 +120,31 @@ spec:
                   name: {{ .Release.Name }}-secrets
             - name: BOT_WEBHOOK_URL
               value: {{ .Values.bot_webhook_url }}
+            - name: REDIS_HOST
+              value: redis-service
           command: ["/bin/sh"]
           args:
             - -c
             - >-
               python manage.py botwebhook
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  labels:
+    deployment: redis
+spec:
+  selector:
+    matchLabels:
+      pod: redis
+  template:
+    metadata:
+      labels:
+        pod: redis
+    spec:
+      containers:
+      - name: master
+        image: redis
+        ports:
+        - containerPort: 6379

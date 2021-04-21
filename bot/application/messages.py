@@ -4,20 +4,23 @@ from telegram.ext import CallbackContext
 from app.territory.models import Territory
 from bot.core.constants import BaseChoices
 from bot.utils.keyboard import build_reply_kb
+from django.utils.translation import activate, gettext_lazy as _
 
 
 def territory_msg(update: Update, context: CallbackContext, reply_markup=None):
+    activate(context.user_data.get("language").lower())
     if reply_markup is None:
         reply_markup = build_reply_kb(Territory.territories_list(), back_btn=True)
+
     update.message.reply_text(
-        'Выберите завод',
+        str(_('Выберите завод')),
         reply_markup=reply_markup
     )
 
 
 def owner_description_msg(update: Update, context: CallbackContext, reply_markup=None):
     if reply_markup is None:
-        reply_markup = build_reply_kb([BaseChoices.BACK])
+        reply_markup = build_reply_kb([BaseChoices().BACK])
     update.message.reply_text(
         'Напишите наименование контрагента и суммы договора',
         reply_markup=reply_markup
@@ -26,7 +29,7 @@ def owner_description_msg(update: Update, context: CallbackContext, reply_markup
 
 def owner_document_msg(update: Update, context: CallbackContext, reply_markup=None):
     if reply_markup is None:
-        reply_markup = build_reply_kb([BaseChoices.BACK])
+        reply_markup = build_reply_kb([BaseChoices().BACK])
     update.message.reply_text(
         'Отправьте файл проекта договора',
         reply_markup=reply_markup

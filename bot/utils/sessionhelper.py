@@ -1,8 +1,13 @@
+import logging
+
 from app.account.models import BotUser
 
 
 def update_user_data(update, context, key, last_choice=None):
-    text = update.message.text
+    if update.message.contact:
+        text = update.message.contact.phone_number
+    else:
+        text = update.message.text
     context.user_data[key] = text
     if last_choice:
         context.user_data['last_choice'] = last_choice

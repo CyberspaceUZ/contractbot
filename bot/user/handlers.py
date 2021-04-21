@@ -1,4 +1,4 @@
-from telegram import Update
+from telegram import Update, ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
 from telegram.ext import ConversationHandler, MessageHandler, Filters, CallbackContext, CommandHandler
 
 from app.account.models import BotUser
@@ -14,13 +14,15 @@ from bot.utils.sessionhelper import update_user_data
 
 def language(update: Update, context: CallbackContext) -> UserConvStates:
     update_user_data(update, context, 'language')
-    phone_msg(update, context)
+    reply_markup = ReplyKeyboardMarkup([[KeyboardButton('Поделиться контактом', request_contact=True)]], resize_keyboard=True)
+    phone_msg(update, context, reply_markup=reply_markup)
     return UserConvStates.PHONE
 
 
 def phone_number(update: Update, context: CallbackContext) -> UserConvStates:
     update_user_data(update, context, 'phone_number')
-    full_name_msg(update, context)
+    reply_markup = ReplyKeyboardRemove()
+    full_name_msg(update, context, reply_markup=reply_markup)
     return UserConvStates.FULL_NAME
 
 
@@ -39,7 +41,6 @@ def company(update: Update, context: CallbackContext) -> UserConvStates:
 def occupation(update: Update, context: CallbackContext) -> UserConvStates:
     text, user_data = update_user_data(update, context, 'occupation')
     BotUser.objects.get(chat_id=update.message.chat_id).update_from_user_data(**user_data)
-    context.user_data.clear()
     main_menu_msg(update, context)
     return ConversationHandler.END
 
@@ -52,7 +53,7 @@ def registration_handler():
         ],
         states={
             UserConvStates.PHONE: [
-                MessageHandler(Filters.text, phone_number),
+                MessageHandler(Filters.text | Filters.contact, phone_number),
             ],
             UserConvStates.FULL_NAME: [
                 MessageHandler(Filters.text, full_name),
@@ -70,6 +71,8 @@ def registration_handler():
             ConvStates.SETTINGS: ConvStates.SETTINGS,
             ConversationHandler.END: ConvStates.MAIN_MENU,
         },
+        name="registration_conversation",
+        persistent=True,
     )
     return conv_handler
 
@@ -79,20 +82,21 @@ def user_settings(update: Update, context: CallbackContext) -> UserConvStates:
     return UserConvStates.SETTINGS
 
 
-def settings_language(update: Update, context: CallbackContext) -> UserConvStates:
-    last_choice = context.user_data.get('last_choice')
-    if last_choice:
-        BotUser.objects.filter(chat_id=update.message.chat_id).update(language=update.message.text)
-        del context.user_data['language']
-        settings_msg(update, context, reply_markup=build_reply_kb(SettingChoices.CHOICE_LIST, back_btn=True))
-        return UserConvStates.SETTINGS
-    update_user_data(update, context, 'language', last_choice='language')
+def settings_language_choice(update: Update, context: CallbackContext) -> UserConvStates:
     language_msg(update, context)
     return UserConvStates.LANGUAGE
 
 
+def settings_set_language(update: Update, context: CallbackContext) -> UserConvStates:
+    BotUser.objects.filter(chat_id=update.message.chat_id).update(language=update.message.text)
+    from django.utils.translation import activate
+    activate(update.message.text.lower())
+    update_user_data(update, context, 'language', last_choice='language')
+    settings_msg(update, context, reply_markup=build_reply_kb(SettingChoices.CHOICE_LIST, back_btn=True))
+    return UserConvStates.SETTINGS
+
+
 def back(update: Update, context: CallbackContext) -> UserConvStates:
-    context.user_data.clear()
     settings_msg(update, context, reply_markup=build_reply_kb(SettingChoices.CHOICE_LIST, back_btn=True))
     return UserConvStates.SETTINGS
 
@@ -105,17 +109,19 @@ def settings_handler():
         states={
             UserConvStates.LANGUAGE: [
                 MessageHandler(regex_choices_filter([BaseChoices.BACK]), back),
-                MessageHandler(regex_choices_filter(LanguageChoices.CHOICE_LIST), settings_language),
+                MessageHandler(regex_choices_filter(LanguageChoices.CHOICE_LIST), settings_set_language),
             ],
             UserConvStates.SETTINGS: [
                 MessageHandler(regex_choices_filter([BaseChoices.BACK]), back_to_main),
-                MessageHandler(regex_choices_filter([SettingChoices.LANGUAGE]), settings_language),
+                MessageHandler(regex_choices_filter([SettingChoices.LANGUAGE]), settings_language_choice),
             ]
         },
         fallbacks=[CommandHandler('stop', back_to_main)],
         map_to_parent={
             ConversationHandler.END: ConvStates.MAIN_MENU,
         },
-        allow_reentry=True
+        allow_reentry=True,
+        name="settings_conversation",
+        persistent=True,
     )
     return conv_handler

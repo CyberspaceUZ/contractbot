@@ -10,7 +10,7 @@ def main_menu_msg(update: Update, context: CallbackContext, text=None):
     if not is_lawyer(update.message.chat_id):
         choices = MainMenuChoices.CHOICE_LIST
     else:
-        choices = MainMenuChoices.LAWYER_CHOICE_LIST
+        choices = MainMenuChoices().LAWYER_CHOICE_LIST
     update.message.reply_text(
         'Главное меню' if not text else text,
         reply_markup=build_reply_kb(choices, n_cols=1)

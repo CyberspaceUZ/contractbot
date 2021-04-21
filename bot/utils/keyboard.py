@@ -1,6 +1,5 @@
 import json
 
-from django.core.paginator import Paginator, EmptyPage
 from django.db.models import Model
 from telegram import ReplyKeyboardMarkup, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import Filters
