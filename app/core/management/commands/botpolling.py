@@ -1,5 +1,6 @@
 from django.core.management import BaseCommand
-import os, logging
+import os
+import logging
 from redis import Redis
 from redispersistence.persistence import RedisPersistence
 

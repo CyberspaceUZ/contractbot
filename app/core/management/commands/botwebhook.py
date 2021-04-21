@@ -26,7 +26,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         token = options["token"]
         port = options["port"]
-        redis_instance = Redis(host='redis', port=6379, db=0)
+        redis_instance = Redis(host=os.environ.get('REDIS_HOST', 'localhost'), port=os.environ.get('REDIS_PORT', '6379'), db=0)
         persistence = RedisPersistence(redis_instance)
         updater = Updater(token, persistence=persistence)
         init_dispatcher(updater)

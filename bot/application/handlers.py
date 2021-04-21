@@ -85,7 +85,7 @@ def owner_document(update: Update, context: CallbackContext) -> ApplicationConvS
 def back(update: Update, context: CallbackContext) -> ApplicationConvStates:
     last_choice = context.user_data.get('last_choice')
     if last_choice == APPLICATION:
-        #del context.user_data['last_choice']
+        del context.user_data['last_choice']
         main_menu_msg(update, context)
         return ConversationHandler.END
     elif last_choice == TERRITORY:

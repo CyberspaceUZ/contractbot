@@ -1,6 +1,7 @@
 from enum import unique, Enum
 from django.utils.translation import gettext_lazy as _
 
+
 @unique
 class ConvStates(Enum):
     START = 0
