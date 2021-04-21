@@ -109,7 +109,7 @@ jobs:
           ./get_helm.sh
       - name: Connect to kubernetes cluster
         run: |
-          aws eks --region us-east-1 update-kubeconfig --name cyberspace
+          aws eks --region us-east-1 update-kubeconfig --name small-cbc
       - name: Helm Deploy
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
