@@ -1,0 +1,150 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-deployment
+  labels:
+    app: {{ .Release.Name }}-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      project: {{ .Release.Name }}
+  template:
+    metadata:
+      name: {{ .Release.Name }}-template
+      labels:
+        project: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Release.Name }}-image
+          image: {{.Values.image}}
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  key: database_url
+                  name: {{ .Release.Name }}-secrets
+            - name: BOT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: bot_token
+                  name: {{ .Release.Name }}-secrets
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  key: aws_access_key_id
+                  name: {{ .Release.Name }}-secrets
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: aws_secret_access_key
+                  name: {{ .Release.Name }}-secrets
+            - name: AWS_STORAGE_BUCKET_NAME
+              valueFrom:
+                secretKeyRef:
+                  key: aws_storage_bucket_name
+                  name: {{ .Release.Name }}-secrets
+            - name: AWS_MEDIA_BUCKET_NAME
+              valueFrom:
+                secretKeyRef:
+                  key: aws_media_bucket_name
+                  name: {{ .Release.Name }}-secrets
+            - name: AWS_S3_REGION_NAME
+              valueFrom:
+                secretKeyRef:
+                  key: aws_s3_region_name
+                  name: {{ .Release.Name }}-secrets
+          command: ["/bin/sh"]
+          args:
+            - -c
+            - >-
+              python manage.py collectstatic --no-input &&
+              python manage.py migrate &&
+              gunicorn --bind 0.0.0.0:8000 --max-requests 50 app.wsgi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-bot-deployment
+  labels:
+    app: {{ .Release.Name }}-bot-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      project: {{ .Release.Name }}-bot
+  template:
+    metadata:
+      name: {{ .Release.Name }}-bot-template
+      labels:
+        project: {{ .Release.Name }}-bot
+    spec:
+      containers:
+        - name: {{ .Release.Name }}-bot-image
+          image: {{.Values.image}}
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  key: database_url
+                  name: {{ .Release.Name }}-secrets
+            - name: BOT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: bot_token
+                  name: {{ .Release.Name }}-secrets
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  key: aws_access_key_id
+                  name: {{ .Release.Name }}-secrets
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: aws_secret_access_key
+                  name: {{ .Release.Name }}-secrets
+            - name: AWS_STORAGE_BUCKET_NAME
+              valueFrom:
+                secretKeyRef:
+                  key: aws_storage_bucket_name
+                  name: {{ .Release.Name }}-secrets
+            - name: AWS_MEDIA_BUCKET_NAME
+              valueFrom:
+                secretKeyRef:
+                  key: aws_media_bucket_name
+                  name: {{ .Release.Name }}-secrets
+            - name: AWS_S3_REGION_NAME
+              valueFrom:
+                secretKeyRef:
+                  key: aws_s3_region_name
+                  name: {{ .Release.Name }}-secrets
+            - name: BOT_WEBHOOK_URL
+              value: {{ .Values.bot_webhook_url }}
+            - name: REDIS_HOST
+              value: redis-service
+          command: ["/bin/sh"]
+          args:
+            - -c
+            - >-
+              python manage.py botwebhook
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  labels:
+    deployment: redis
+spec:
+  selector:
+    matchLabels:
+      pod: redis
+  template:
+    metadata:
+      labels:
+        pod: redis
+    spec:
+      containers:
+      - name: master
+        image: redis
+        ports:
+        - containerPort: 6379

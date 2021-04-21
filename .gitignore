@@ -1,3 +1,9 @@
 /venv
 /.idea
 db.sqlite3
+.localvalues.yaml
+*.pyc
+celerybeat-schedule
+.vscode
+static
+documents

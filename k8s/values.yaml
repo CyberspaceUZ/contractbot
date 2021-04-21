@@ -1,0 +1,20 @@
+image: custom-value
+database_url: custom-value
+bot_token: custom-value
+bot_webhook_url: custom-value
+aws_secret_access_key: custom-value
+aws_access_key_id: custom-value
+aws_storage_bucket_name: custom-value
+aws_media_bucket_name: custom-value
+aws_s3_region_name: "us-east-1"
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 4
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+
+
+ingress:
+  host: custom-value
