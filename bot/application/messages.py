@@ -22,7 +22,7 @@ def owner_description_msg(update: Update, context: CallbackContext, reply_markup
     if reply_markup is None:
         reply_markup = build_reply_kb([BaseChoices().BACK])
     update.message.reply_text(
-        'Напишите наименование контрагента и суммы договора',
+        'Напишите наименование контрагента',
         reply_markup=reply_markup
     )
 
