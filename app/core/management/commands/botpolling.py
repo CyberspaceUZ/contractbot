@@ -1,5 +1,5 @@
 from django.core.management import BaseCommand
-import os
+import os, logging
 from redis import Redis
 from redispersistence.persistence import RedisPersistence
 
@@ -19,6 +19,18 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
+        logging.basicConfig(
+            format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+            level=logging.INFO,
+        )
+        logger = logging.getLogger("bot")
+        logger.setLevel(logging.INFO)
+        console = logging.StreamHandler()
+        console.setLevel(logging.INFO)
+        console.setFormatter(
+            logging.Formatter("%(name)s - %(levelname)s - %(message)s")
+        )
+        logger.addHandler(console)
         token = options["token"]
         redis_instance = Redis(host='localhost', port=6379, db=0)
         persistence = RedisPersistence(redis_instance)

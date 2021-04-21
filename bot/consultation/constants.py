@@ -8,14 +8,6 @@ class ConsultationConvStates(Enum):
 
 
 @unique
-class ApplicationResultConvStates(Enum):
-    APPROVED = 0
-    CANCELED = 1
-    DESCRIPTION = 2
-    DOCUMENT = 3
-
-
-@unique
 class ConsultationActions(Enum):
     START_REVIEW = 0
     USER_INFO = 1
@@ -30,12 +22,3 @@ class ConsultationActions(Enum):
         (USER_INFO, 'Информация о заявителе'),
         (ANSWER, 'Отвечать'),
     )
-
-# class ApplicationResultChoices:
-#     APPROVED = 'Согласованно'
-#     CANCELED = 'Отказ'
-#
-#     CHOICES_LIST = (
-#         APPROVED,
-#         CANCELED,
-#     )

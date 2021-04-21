@@ -1,15 +1,19 @@
 from telegram import Update
 from telegram.ext import CallbackContext
 
+from django.utils.translation import activate, gettext_lazy as _
+
 from bot.core.constants import BaseChoices
 from bot.utils.keyboard import build_reply_kb
 
 
 def question_msg(update: Update, context: CallbackContext, reply_markup=None):
+    activate(context.user_data.get("language").lower())
     if reply_markup is None:
-        reply_markup = build_reply_kb([BaseChoices.BACK])
+        reply_markup = build_reply_kb([BaseChoices().get_back()])
+
     update.message.reply_text(
-        'Напишите свой вопрос',
+        str(_('Напишите свой вопрос')),
         reply_markup=reply_markup
     )
 

@@ -13,7 +13,6 @@ from bot.consultation.handlers import consultation_handler
 
 
 def start(update: Update, context: CallbackContext) -> ConvStates:
-    context.user_data.clear()
     user, _ = BotUser.objects.update_or_create(
         chat_id=update.message.chat_id,
         defaults=dict(
@@ -25,8 +24,6 @@ def start(update: Update, context: CallbackContext) -> ConvStates:
         return ConvStates.REGISTER
 
     main_menu_msg(update, context)
-    # logging.warning(context.user_data)
-    # context.user_data.clear()
     return ConvStates.MAIN_MENU
 
 

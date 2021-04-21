@@ -98,11 +98,11 @@ def consultation_handler():
         ],
         states={
             ConsultationConvStates.TERRITORY: [
-                MessageHandler(regex_choices_filter([BaseChoices.BACK]), back),
+                MessageHandler(regex_choices_filter(BaseChoices.get_back_multi()), back),
                 MessageHandler(Filters.text, territory),
             ],
             ConsultationConvStates.QUESTION: [
-                MessageHandler(regex_choices_filter([BaseChoices.BACK]), back),
+                MessageHandler(regex_choices_filter(BaseChoices.get_back_multi()), back),
                 MessageHandler(Filters.text, question),
             ],
         },
@@ -137,7 +137,6 @@ def answer(update: Update, context: CallbackContext):
 
 
 def result_back(update: Update, context: CallbackContext):
-    context.user_data.clear()
     main_menu_msg(update, context)
     return ConversationHandler.END
 

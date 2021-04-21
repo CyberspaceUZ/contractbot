@@ -1,5 +1,5 @@
 from enum import unique, Enum
-
+from django.utils.translation import gettext_lazy as _
 
 @unique
 class ConvStates(Enum):
@@ -12,10 +12,10 @@ class ConvStates(Enum):
 
 
 class MainMenuChoices:
-    APPLICATION = "Согласовать договор"
-    CONSULTATION = "Юридическая консультация"
-    REPORT = "Отчеты"
-    SETTINGS = "Настройки"
+    APPLICATION = str(_("Согласовать договор"))
+    CONSULTATION = str(_("Юридическая консультация"))
+    REPORT = str(_("Отчеты"))
+    SETTINGS = str(_("Настройки"))
 
     CHOICE_LIST = (
         APPLICATION,

@@ -58,11 +58,7 @@ class ApplicationCallback:
         query = update.callback_query
         data = json.loads(query.data)
         obj = Application.objects.get(id=data['id'])
-        query.answer()
-        context.bot.send_message(
-            chat_id=query.message.chat_id,
-            text=obj.owner.msg_detail,
-        )
+        context.bot.answer_callback_query(callback_query_id=query.id, text=obj.owner.msg_detail, show_alert=True)
         query.answer()
         return ConversationHandler.END
 

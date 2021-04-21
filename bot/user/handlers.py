@@ -41,7 +41,6 @@ def company(update: Update, context: CallbackContext) -> UserConvStates:
 def occupation(update: Update, context: CallbackContext) -> UserConvStates:
     text, user_data = update_user_data(update, context, 'occupation')
     BotUser.objects.get(chat_id=update.message.chat_id).update_from_user_data(**user_data)
-    context.user_data.clear()
     main_menu_msg(update, context)
     return ConversationHandler.END
 
@@ -83,20 +82,21 @@ def user_settings(update: Update, context: CallbackContext) -> UserConvStates:
     return UserConvStates.SETTINGS
 
 
-def settings_language(update: Update, context: CallbackContext) -> UserConvStates:
-    last_choice = context.user_data.get('last_choice')
-    if last_choice:
-        BotUser.objects.filter(chat_id=update.message.chat_id).update(language=update.message.text)
-        del context.user_data['language']
-        settings_msg(update, context, reply_markup=build_reply_kb(SettingChoices.CHOICE_LIST, back_btn=True))
-        return UserConvStates.SETTINGS
-    update_user_data(update, context, 'language', last_choice='language')
+def settings_language_choice(update: Update, context: CallbackContext) -> UserConvStates:
     language_msg(update, context)
     return UserConvStates.LANGUAGE
 
 
+def settings_set_language(update: Update, context: CallbackContext) -> UserConvStates:
+    BotUser.objects.filter(chat_id=update.message.chat_id).update(language=update.message.text)
+    from django.utils.translation import activate
+    activate(update.message.text.lower())
+    update_user_data(update, context, 'language', last_choice='language')
+    settings_msg(update, context, reply_markup=build_reply_kb(SettingChoices.CHOICE_LIST, back_btn=True))
+    return UserConvStates.SETTINGS
+
+
 def back(update: Update, context: CallbackContext) -> UserConvStates:
-    context.user_data.clear()
     settings_msg(update, context, reply_markup=build_reply_kb(SettingChoices.CHOICE_LIST, back_btn=True))
     return UserConvStates.SETTINGS
 
@@ -109,11 +109,11 @@ def settings_handler():
         states={
             UserConvStates.LANGUAGE: [
                 MessageHandler(regex_choices_filter([BaseChoices.BACK]), back),
-                MessageHandler(regex_choices_filter(LanguageChoices.CHOICE_LIST), settings_language),
+                MessageHandler(regex_choices_filter(LanguageChoices.CHOICE_LIST), settings_set_language),
             ],
             UserConvStates.SETTINGS: [
                 MessageHandler(regex_choices_filter([BaseChoices.BACK]), back_to_main),
-                MessageHandler(regex_choices_filter([SettingChoices.LANGUAGE]), settings_language),
+                MessageHandler(regex_choices_filter([SettingChoices.LANGUAGE]), settings_language_choice),
             ]
         },
         fallbacks=[CommandHandler('stop', back_to_main)],
