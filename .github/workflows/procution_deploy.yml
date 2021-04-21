@@ -135,4 +135,3 @@ jobs:
           ./k8s
       - name: Check pods
         run: kubectl get pods --namespace=${{ github.event.repository.name }}
-
