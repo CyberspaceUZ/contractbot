@@ -1,3 +1,5 @@
+import logging
+
 from django.core.management import BaseCommand
 import os
 from redis import Redis
@@ -31,7 +33,8 @@ class Command(BaseCommand):
         updater = Updater(token, persistence=persistence)
         init_dispatcher(updater)
         updater.start_webhook(listen="0.0.0.0", port=port, url_path=token)
+        logging.warning(f'WEBHOOK {os.environ.get("BOT_WEBHOOK_URL", "https://test1.artelgroup.org/")}')
         updater.bot.set_webhook(
-            os.environ.get("BOT_WEBHOOK_URL", "https:test1.artelgroup.org/") + token
+            os.environ.get("BOT_WEBHOOK_URL", "https://test1.artelgroup.org/") + token
         )
         updater.idle()
